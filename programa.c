@@ -40,6 +40,7 @@ Matriz * leerArchivo ( char fileName[] )
     int vertices = 0;
     int aristas = 0;
     int pesos = 0;
+    char auxStr[ 256 ];
     Matriz * matriz = crearMatriz(); 
     FILE * archivo = fopen( fileName, "r" );
 
@@ -48,6 +49,34 @@ Matriz * leerArchivo ( char fileName[] )
         perror ( "Error al intentar de abrir el archivo... " );
         printf ( "\n\n************************** Fin Programa *************************\n\n" );
         exit ( EXIT_FAILURE );
+    }
+
+    while ( ( fscanf ( archivo, "%s", auxStr ) ) != EOF )
+    {
+        if ( strlen( auxStr ) == 1 )
+        {
+            Lista * lista = crearLista();
+            Nodo * nodo = crearNodo();
+
+            vertices++;
+            lista -> vertice = atoi(auxStr);
+            lista -> listaAdyacencia = nodo;
+        }
+
+        else if ( strlen ( auxStr ) == 3 )
+        {
+            int vertice, peso;
+            char delim[] = " ";
+
+            char *ptr = strtok(auxStr, delim);
+            while(ptr != NULL)
+            {
+                ptr = strtok(NULL, delim);
+            }
+
+            vertice = auxStr[0] - 48;
+            peso = auxStr[2] - 48;
+        }
     }
 
     fclose(archivo);
