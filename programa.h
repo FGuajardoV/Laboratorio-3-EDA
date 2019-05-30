@@ -15,19 +15,11 @@ typedef struct Lista
     int vertice;
     Nodo *listaAdyacencia;
     struct Lista *sgte;
-    struct Lista *ant;
 } Lista;
 
-typedef struct 
-{
-    int verticesTotales;
-    int aristasTotales;
-    int pesosTotal;
-    Lista *matrix;
-} Matriz;
 
 /********** Prototipos **********/
-Matriz * leerArchivo ( char fileName[] );
-Matriz * crearMatriz();
+Lista * leerArchivo ( char fileName[] );
 Lista * crearLista();
-Nodo * crearNodo();
+Nodo * crearNodo(int v, int p);
+int obtenerNumeroVertices ( Lista * lista );

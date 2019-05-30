@@ -17,31 +17,29 @@ int main( int argc, char* argv[] )
 
     else if ( argc == 3 && strcmp ( argv[1], "1" ) )
     {
-        Matriz * matriz;
+        Lista * listaAdyacencia;
+        int vertices, pesos;
 
-        matriz = leerArchivo ( argv[2] );
+        listaAdyacencia = leerArchivo ( argv[2] );
+        vertices = obtenerNumeroVertices ( listaAdyacencia );
     }
 
     else if ( argc == 1 )
     {
-        printf("ERROR: Sin parametros de analisis, porfavor vuelva a iniciar el programa.\n");
+        printf ( "ERROR: Sin parametros de analisis, porfavor vuelva a iniciar el programa.\n" );
     }
 
     else 
     {
-        printf("ERROR: Cantidad de parametros incorrecta, porfavor vuelva a iniciar el programa.\n");
+        printf ( "ERROR: Cantidad de parametros incorrecta, porfavor vuelva a iniciar el programa.\n" );
     }
 
     printf ( "\n\n************************** Fin Programa *************************\n\n" );
 }
 
-Matriz * leerArchivo ( char fileName[] )
+Lista * leerArchivo ( char fileName[] )
 {
-    int vertices = 0;
-    int aristas = 0;
-    int pesos = 0;
     char auxStr[ 256 ];
-    Matriz * matriz = crearMatriz(); 
     FILE * archivo = fopen( fileName, "r" );
 
     if ( archivo == NULL)
@@ -51,16 +49,27 @@ Matriz * leerArchivo ( char fileName[] )
         exit ( EXIT_FAILURE );
     }
 
-    while ( ( fscanf ( archivo, "%s", auxStr ) ) != EOF )
-    {
-        if ( strlen( auxStr ) == 1 )
-        {
-            Lista * lista = crearLista();
-            Nodo * nodo = crearNodo();
+    Lista * lista;
+    Nodo * nodo;
+    Lista * auxLista;
+    Nodo * auxNodo;
 
-            vertices++;
-            lista -> vertice = atoi(auxStr);
-            lista -> listaAdyacencia = nodo;
+    while ( ( fscanf ( archivo, "%s", auxStr ) ) != EOF )
+    { 
+        if ( strlen ( auxStr ) == 1 && lista == NULL )
+        {
+            auxLista = crearLista();
+            auxLista -> vertice = atoi ( auxStr );
+            lista = auxLista;
+        }
+
+        else if ( strlen ( auxStr ) == 1 )
+        {
+            Lista * aux = auxLista;
+            auxLista = crearLista();
+            auxLista -> vertice = atoi ( auxStr );
+            aux -> sgte = auxLista;
+            nodo = NULL;
         }
 
         else if ( strlen ( auxStr ) == 3 )
@@ -68,45 +77,34 @@ Matriz * leerArchivo ( char fileName[] )
             int vertice, peso;
             char delim[] = " ";
 
-            char *ptr = strtok(auxStr, delim);
-            while(ptr != NULL)
+            char *ptr = strtok ( auxStr, delim );
+
+            while ( ptr != NULL )
             {
-                ptr = strtok(NULL, delim);
+                ptr = strtok ( NULL, delim );
             }
 
             vertice = auxStr[0] - 48;
             peso = auxStr[2] - 48;
+
+            if ( nodo == NULL )
+            {
+                nodo = crearNodo ( vertice, peso );
+                auxLista -> listaAdyacencia = nodo;
+                auxNodo = nodo;
+            }
+
+            else 
+            {
+                Nodo * aux = auxNodo;
+                auxNodo = crearNodo ( vertice, peso );
+                aux -> sig = auxNodo;
+            }
         }
     }
 
     fclose(archivo);
-
-    matriz -> verticesTotales = vertices;
-    matriz -> aristasTotales = aristas;
-    matriz -> pesosTotal = pesos;
-    return matriz;
-}
-
-Matriz * crearMatriz()
-{
-    // Se pide el espacio de memoria para la estructura.
-	Matriz * matriz = ( Matriz * ) malloc ( sizeof ( Matriz ) );
-
-	// Si la asignacion de memoria es exitosa, se inicializan las variables.
-	if ( matriz != NULL )
-    {
-	    matriz -> verticesTotales = 0;
-        matriz -> aristasTotales = 0;
-        matriz -> pesosTotal = 0;
-        matriz -> matrix = NULL;
-        return matriz;
-	}
-
-	// En caso contrario se retorna nulo.
-	else
-    {
-		return NULL;
-	}
+    return lista;
 }
 
 Lista * crearLista()
@@ -120,7 +118,6 @@ Lista * crearLista()
         lista -> vertice = 0;
 	    lista -> listaAdyacencia = NULL;
 		lista -> sgte = NULL;
-        lista -> ant = NULL;
 		return lista;
 	}
 
@@ -132,7 +129,7 @@ Lista * crearLista()
 
 }
 
-Nodo * crearNodo()
+Nodo * crearNodo(int v, int p)
 {
     // Se pide el espacio de memoria para la estructura.
 	Nodo * nodo = ( Nodo * ) malloc ( sizeof ( Nodo ) );
@@ -140,8 +137,8 @@ Nodo * crearNodo()
     // Si la asignacion de memoria es exitosa, se inicializan las variables.
 	if ( nodo != NULL )
     {
-        nodo -> vertice = 0;
-	    nodo -> peso = 0;
+        nodo -> vertice = v;
+	    nodo -> peso = p;
 		nodo -> sig = NULL;
 		return nodo;
 	}
@@ -151,4 +148,18 @@ Nodo * crearNodo()
     {
 		return NULL;
 	}
+}
+
+int obtenerNumeroVertices ( Lista * lista )
+{
+    int vertices = 0;
+    Lista * aux = lista;
+
+    while ( aux != NULL )
+    {
+        vertices++;
+        aux = aux -> sgte;
+    }
+
+    return vertices;
 }
