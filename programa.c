@@ -24,6 +24,9 @@ int main( int argc, char* argv[] )
     else if ( argc == 3 &&  ( atoi ( argv[ 1 ] ) == 2 ) )
     {
         Lista * listaAdyacencia;
+        // En este caso, la funcion se encuentra incompleta, por lo cual, para no generar errores
+        //al ejecutar, posee datos predefinidos que no corresponderan al resultado final.
+        //Disculpenme por lo incompleto de esta entrega.
         int vertices, aristas = 0, ciclos = 0, regular, gradoMax, gradoMin, pesos = 0, conexo = 0;
         
         // Se crea la lista a partir de la funcion leerArchivo
