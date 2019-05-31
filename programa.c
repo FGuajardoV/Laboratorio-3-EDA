@@ -14,8 +14,7 @@ int main( int argc, char* argv[] )
     //argv[7] = grado min grafo.
     //argv[8] = suma total pesos.
     if ( argc == 9 && ( atoi ( argv[ 1 ] ) == 1 ) )
-    {
-        
+    { 
         printf ( "Completada la generacion, revise el archivo 'grafo.out'" );
     }
 
@@ -294,7 +293,7 @@ int obtenerGradoMaximo ( Lista * lista )
 int obtenerGradoMinimo ( Lista * lista)
 {
     //Iniciamos con un numero grande para buscar el menos al comparar.
-    int gradoMin = 10000000000000;
+    int gradoMin = 1316134912;
     int auxGrado = 0;
     Lista * auxLista = lista;
     Nodo * auxNodo;
